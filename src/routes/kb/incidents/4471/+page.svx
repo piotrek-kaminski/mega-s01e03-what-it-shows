@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · dates parse mm/dd in eu locales'
 owner: support desk
-status: split
+status: closed
 reviewed: 2026-10-30
 ---
 
@@ -19,10 +19,10 @@ Since April, people have told us their bookings land on the wrong day: a month f
 first. The fix is queued.
 
 <Callout kind="warn">
-Split. Read the reports, not their subjects, and this ticket holds three problems:
-the parser ([#1](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/1)), the booking-v3 form hint
-([#2](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/2)) and one-day moves across time zones
-([#3](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/3)). The queued fix closes only the first.
+Closed 5 October, split. Read the reports, not their subjects, and this ticket holds three problems:
+the parser ([#1](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/1), fixed), the booking-v3 form hint
+([#2](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/2), won't fix: form retired) and one-day moves
+across time zones ([#3](https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues/3), still open).
 See [#4471 · three problems, not one](/kb/incidents/4471-split).
 </Callout>
 

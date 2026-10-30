@@ -6,24 +6,33 @@ import { causeOf, uniqueById, type Report, type Tenant } from '#lib/kb/causes';
 export type Problem = 'parser' | 'hint' | 'shift';
 
 // One fix each. Ticket numbers are issues in the repo below.
-export const PROBLEMS: readonly { problem: Problem; title: string; fix: string; issue: number }[] = [
+// `state` is what engineering did when it closed #4471 (05 Oct 2026).
+export type State = 'fixed' | "won't fix" | 'open';
+
+export const PROBLEMS: readonly { problem: Problem; title: string; fix: string; issue: number; state: State; why: string }[] = [
   {
     problem: 'parser',
     title: 'Shared parser reads day-first dates month first',
     fix: 'parse with the tenant locale',
     issue: 1,
+    state: 'fixed',
+    why: 'fix(dates): parse dd/mm for eu locales',
   },
   {
     problem: 'hint',
     title: 'booking-v3 form hint says MM/DD/YYYY to day-first tenants',
     fix: 'print the hint in the tenant locale',
     issue: 2,
+    state: "won't fix",
+    why: 'booking-v3 form retired',
   },
   {
     problem: 'shift',
     title: 'Invites land one day early or late across time zones',
     fix: 'store and send the booking with its time zone',
     issue: 3,
+    state: 'open',
+    why: 'not covered by either change',
   },
 ];
 

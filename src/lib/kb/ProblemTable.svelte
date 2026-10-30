@@ -27,7 +27,7 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>intake tagged</th><th>ticket</th></tr>
+    <tr><th>problem</th><th>reports</th><th>tenants</th><th>seen</th><th>intake tagged</th><th>ticket</th><th>state</th></tr>
   </thead>
   <tbody>
     {#each groups as g (g.problem)}
@@ -42,6 +42,7 @@
         <td>{g.firstSeen} → {g.lastSeen}</td>
         <td class="muted">{tags(g)}</td>
         <td>{#if p}<a href="{ISSUES_REPO}/{p.issue}">#{p.issue}</a>{:else}none yet{/if}</td>
+        <td>{#if p}<span class="state" class:open={p.state === 'open'}>{p.state}</span><br /><span class="muted">{p.why}</span>{/if}</td>
       </tr>
     {/each}
   </tbody>
@@ -57,4 +58,6 @@
   .sum { font-size: 1.1rem; }
   .muted { color: var(--muted); font-size: 0.85em; }
   .unplaced td { background: var(--warn-bg); }
+  .state { font-weight: 600; }
+  .state.open { color: var(--warn); }
 </style>

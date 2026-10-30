@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · three problems, not one'
 owner: piotrek-kaminski
-status: closed
+status: open
 reviewed: 2026-10-30
 signature: piotrek-kaminski
 ---
@@ -18,7 +18,8 @@ instead of their subjects and the ticket holds three problems. Each needs its ow
 has its own ticket.
 
 <Callout kind="warn">
-The queued parser fix closes only the first row below. The other two keep coming after it ships.
+Engineering closed #4471 on 5 October: the parser is fixed and the booking-v3 form is retired, so
+its hint won't be fixed. One-day moves across time zones are still open: neither change touches them.
 </Callout>
 
 ## What #4471 holds
