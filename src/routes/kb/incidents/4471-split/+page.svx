@@ -1,0 +1,69 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: piotrek-kaminski
+status: proposed
+reviewed: 2026-10-30
+signature: piotrek-kaminski
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one parser bug, one fix queued. Read the reports
+instead of their subjects and the ticket holds three problems. Each needs its own fix, so each now
+has its own ticket.
+
+<Callout kind="warn">
+The queued parser fix closes only the first row below. The other two keep coming after it ships.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} />
+
+## The three problems
+
+**`parser`: the shared parser reads every date month first.** Our tenants all write the day first,
+so 7 April goes out as 4 July. Every channel, every tenant. This is what #4471 says it is, and the
+queued fix is for this.
+
+**`hint`: the booking-v3 form tells day-first people to type month first.** Its date field prints
+`MM/DD/YYYY`, people type what it says, and the form then reads the date the tenant's way. Only
+tenants on booking-v3, and only reports that came in through the form. Fixing the parser does not
+touch this: the form needs a hint in the tenant's own format. The 4471 page already shows this
+row as "not this ticket, no ticket of its own".
+
+**`shift`: a booking lands one day early or late.** "Invite says Tuesday 12 May, calendar says
+Monday 11 May." "Client in Lisbon got Tuesday, client in Toronto got Monday." "The invite arrived
+before I made the booking." No flipped date does that; a time zone does. These are the reports the
+desk already listed as one-day moves (`desk-notes.json`). The 4471 page counts them under
+`parser` and footnotes them; here they get their own row and their own ticket.
+
+## How each report is placed
+
+1. Count each report once: the export repeats some rows (`uniqueById`).
+2. Reports the desk read as a one-day move are `shift`.
+3. Every other report goes where its tenant puts it (`causes.ts`): through the form on booking-v3
+   is `hint`, anything else is `parser`.
+
+The rule lives in `#lib/kb/problems.ts`. The table above is rebuilt from the export on every build,
+so the counts follow the desk as it keeps merging.
+
+## What intake got wrong
+
+Intake tags a report from the reporter's browser. The cause is the tenant's: their locale and
+their form. The "intake tagged" column shows how often those disagree: `hint` reports tagged
+`parser` and the other way round. Don't triage on the tag.
+
+## Why it took until now
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges reports whose subjects match.
+"Wrong day on the invite" is the subject of all three problems, so all three went into one
+ticket and the count looked like one loud bug. Merging on subject is fast. It is not the same as
+merging on cause: [triage](/kb/triage/dedupe) has an explorer that shows the difference.
+
+<RenderStamp {signature} />
