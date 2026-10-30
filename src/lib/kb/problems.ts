@@ -30,16 +30,19 @@ export const PROBLEMS: readonly { problem: Problem; title: string; fix: string; 
 export const ISSUES_REPO = 'https://github.com/piotrek-kaminski/mega-s01e03-what-it-shows/issues';
 
 // A one-day move is not a flipped date: no parser or hint bug moves 12 May to 11 May. The desk reads
-// the body and lists those reports; everything else goes where its tenant puts it.
-export function problemOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): Problem | null {
-  if (oneDayMove.includes(r.id)) return 'shift';
-  return causeOf(r, t);
+// the body and lists those reports (desk-notes.json). The desk's own view still counts them where
+// their tenant files them (CauseTable), so a one-day move counts there and under `shift` too.
+export function problemsOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): (Problem | 'unplaced')[] {
+  const filed = causeOf(r, t) ?? 'unplaced';
+  return oneDayMove.includes(r.id) ? [filed, 'shift'] : [filed];
 }
 
 export type ProblemGroup = {
   problem: Problem | 'unplaced';
   reports: Report[];
   tenants: number;
+  // Reports in this group that are also one-day moves (counted under `shift` as well).
+  alsoShift: number;
   firstSeen: string;
   lastSeen: string;
   // What intake tagged these reports as: tag → count.
@@ -55,8 +58,7 @@ export function groupByProblem(
   const merged = uniqueById(reports).filter((r) => r.mergedInto === ticket);
   const by = new Map<ProblemGroup['problem'], Report[]>();
   for (const r of merged) {
-    const p = problemOf(r, tenantOf(r), oneDayMove) ?? 'unplaced';
-    by.set(p, [...(by.get(p) ?? []), r]);
+    for (const p of problemsOf(r, tenantOf(r), oneDayMove)) by.set(p, [...(by.get(p) ?? []), r]);
   }
   return [...by.entries()]
     .map(([problem, rs]) => {
@@ -65,6 +67,7 @@ export function groupByProblem(
         problem,
         reports: rs,
         tenants: new Set(rs.map((r) => r.tenant)).size,
+        alsoShift: problem === 'shift' ? 0 : rs.filter((r) => oneDayMove.includes(r.id)).length,
         firstSeen: days[0],
         lastSeen: days[days.length - 1],
         taggedAs: rs.reduce<Record<string, number>>((n, r) => ({ ...n, [r.meta.intakeTag]: (n[r.meta.intakeTag] ?? 0) + 1 }), {}),

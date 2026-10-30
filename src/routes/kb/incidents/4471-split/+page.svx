@@ -41,14 +41,15 @@ row as "not this ticket, no ticket of its own".
 Monday 11 May." "Client in Lisbon got Tuesday, client in Toronto got Monday." "The invite arrived
 before I made the booking." No flipped date does that; a time zone does. These are the reports the
 desk already listed as one-day moves (`desk-notes.json`). The 4471 page counts them under
-`parser` and footnotes them; here they get their own row and their own ticket.
+`parser` and footnotes them. They stay counted there, the desk's way, and get their own row and
+their own ticket as well.
 
 ## How each report is placed
 
 1. Count each report once: the export repeats some rows (`uniqueById`).
-2. Reports the desk read as a one-day move are `shift`.
-3. Every other report goes where its tenant puts it (`causes.ts`): through the form on booking-v3
-   is `hint`, anything else is `parser`.
+2. Every report goes where its tenant puts it (`causes.ts`), as in the desk's own view: through the
+   form on booking-v3 is `hint`, anything else is `parser`.
+3. Reports the desk read as a one-day move are counted under `shift` too.
 
 The rule lives in `#lib/kb/problems.ts`. The table above is rebuilt from the export on every build,
 so the counts follow the desk as it keeps merging.
